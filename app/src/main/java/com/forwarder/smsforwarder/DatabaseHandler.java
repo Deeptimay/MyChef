@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_BODY, sms.getBody()); // Contact Name
         values.put(KEY_PH_NO, sms.getPhoneNumber()); // Contact Phone Number
 
+        Log.d("Inserting: ",sms.getPhoneNumber()+" " +sms.getBody() );
         // Inserting Row
         db.insert(TABLE_CONTACTS, null, values);
         db.close(); // Closing database connection
@@ -127,6 +129,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CONTACTS, KEY_ID + " = ?",
                 new String[]{String.valueOf(sms.getID())});
+        Log.d("Deleting: ", sms.getID()+" "+sms.getPhoneNumber() + " " + sms.getBody());
         db.close();
     }
 }

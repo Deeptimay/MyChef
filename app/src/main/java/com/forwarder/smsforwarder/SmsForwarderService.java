@@ -10,6 +10,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -74,7 +75,7 @@ public class SmsForwarderService extends BroadcastReceiver {
                          * CRUD Operations
                          * */
                         // Inserting Contacts
-                        Log.d("Insert: ", "Inserting ..");
+
                         db.addContact(new SMSDataType(message, senderNum));
 
                     }
@@ -105,6 +106,7 @@ public class SmsForwarderService extends BroadcastReceiver {
             public void onResponse(String response) {
 //                mPostCommentResponse.requestCompleted();
                 Log.d("response", response);
+                Log.d("Volley", "Id: " + sms._id + " Response: " + response);
                 db.deleteContact(sms);
             }
         }, new Response.ErrorListener() {
@@ -112,6 +114,7 @@ public class SmsForwarderService extends BroadcastReceiver {
             public void onErrorResponse(VolleyError error) {
 //                mPostCommentResponse.requestEndedWithError(error);
                 Log.d("response", String.valueOf(error));
+                Log.d("Volley", "Id: " + sms._id + " Response: " + String.valueOf(error));
 
             }
         }) {
@@ -121,8 +124,10 @@ public class SmsForwarderService extends BroadcastReceiver {
                 params.put("Body", sms._body);
                 params.put("Number", sms._phone_number);
 
-                Log.d("Body", sms._body);
-                Log.d("Number", sms._phone_number);
+//                Log.d("Body", "Body " + sms._body);
+//                Log.d("Params", "Id: " + sms._id + "Body " + sms._body + "Number " + sms._phone_number + params);
+                Log.d("Volley", "Id: " + sms._id + "Params " + params);
+//                Log.d("Number", "Number"+ sms._phone_number);
 
                 return params;
             }
@@ -134,6 +139,12 @@ public class SmsForwarderService extends BroadcastReceiver {
 //                return params;
 //            }
         };
+        sr.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         queue.add(sr);
+
     }
 }
